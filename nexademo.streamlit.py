@@ -1,5 +1,4 @@
 import streamlit as st
-import nexaGeo as ng
 import nexadata as nd
 import folium
 import geocoding
