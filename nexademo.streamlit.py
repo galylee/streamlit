@@ -1,6 +1,5 @@
 import streamlit as st
 import nexadata as nd
-import folium
 import geocoding
 
 st.title(' 下秒数据 nexadata POI可视化')
