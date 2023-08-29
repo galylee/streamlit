@@ -12,7 +12,7 @@ option = st.selectbox(
 
 startbucks=nd.load(option)
 
-startbucks=ng.transform_latlon(startbucks)
+startbucks=nd.transform_latlon(startbucks)
 
 for i,row in startbucks.iterrows():
     lon,lat = geocoding.gcj02_to_wgs84(row['lon'], row['lat'])
