@@ -124,9 +124,12 @@ def main():
         session_state.username = None
 
     if not session_state.logged_in:
-        st.sidebar.button("注册", key="register-sidebar-button", on_click=register)
-        if st.sidebar.button("登录", key="login-sidebar-button"):
-            login(session_state)
+        login(session_state)
+        st.markdown("---")
+        st.markdown("还没有账号？[点击此处注册](#register)")
+
+        if st.button("注册", key="register-button"):
+            register()
     else:
         st.sidebar.button("注销", on_click=logout, args=(session_state,))
         upload_file(session_state)
