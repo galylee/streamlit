@@ -68,7 +68,7 @@ def login(session):
 # 上传文件
 def upload_file(session):
     st.header("上传文件")
-    uploaded_file = st.file_uploader("选择要上传的CSV文件")
+    uploaded_file = st.file_uploader("选择要上传的文件")
 
     if uploaded_file is not None:
         file_path = f"uploads/{session.username}/{uploaded_file.name}"
@@ -122,6 +122,7 @@ def main():
 
     if not session_state.logged_in:
         login(session_state)
+        register()
         st.sidebar.empty()
     else:
         st.sidebar.button("注销", on_click=logout, args=(session_state,))
