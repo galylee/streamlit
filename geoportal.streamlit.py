@@ -44,15 +44,17 @@ def register():
                 c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password_hash))
                 conn.commit()
                 st.success("注册成功！")
-                st.empty()
-                st.empty()
+                username_input.empty()
+                password_input.empty()
+                confirm_password_input.empty()
+                login_form.empty()  # 隐藏登陆表单
             except sqlite3.IntegrityError:
                 st.error("用户名已存在！")
         else:
             st.error("密码不匹配！")
 
 # 登录页面
-def login(session):
+def login():
     st.header("用户登录")
     username = st.text_input("用户名")
     password = st.text_input("密码", type="password")
@@ -62,84 +64,64 @@ def login(session):
         c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password_hash))
         result = c.fetchone()
         if result:
-            session.logged_in = True
-            session.username = username
             st.success("登录成功！")
-            st.empty()
-            st.empty()
-            upload_file(session)
-            show_files(session)
+            upload_file()
+            show_files()
         else:
             st.error("用户名或密码错误！")
 
 # 上传文件
-def upload_file(session):
+def upload_file():
     st.header("上传文件")
     uploaded_file = st.file_uploader("选择要上传的文件")
 
     if uploaded_file is not None:
-        file_path = f"uploads/{session.username}/{uploaded_file.name}"
+        file_path = f"uploads/{uploaded_file.name}"
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getvalue())
 
-        c.execute("INSERT INTO files (username, filename) VALUES (?, ?)", (session.username, uploaded_file.name))
+        c.execute("INSERT INTO files (username, filename) VALUES (?, ?)", (uploaded_file.name, uploaded_file.name))
         conn.commit()
         st.success("文件上传成功！")
 
 # 删除文件
-def delete_file(session, filename):
-    file_path = f"uploads/{session.username}/{filename}"
+def delete_file(filename):
+    file_path = f"uploads/{filename}"
     if os.path.exists(file_path):
         os.remove(file_path)
-        c.execute("DELETE FROM files WHERE username=? AND filename=?", (session.username, filename))
+        c.execute("DELETE FROM files WHERE username=? AND filename=?", (filename, filename))
         conn.commit()
         st.success("文件删除成功！")
     else:
         st.error("文件不存在！")
 
 # 显示文件列表
-def show_files(session):
+def show_files():
     st.header("已上传文件列表")
-    c.execute("SELECT filename FROM files WHERE username=?", (session.username,))
+    c.execute("SELECT filename FROM files")
     files = c.fetchall()
     if files:
         file_list = [file[0] for file in files]
         selected_file = st.selectbox("选择文件", file_list)
         if st.button("删除文件", key="delete-button"):
-            delete_file(session, selected_file)
-            show_files(session)
+            delete_file(selected_file)
+            show_files()
     else:
         st.info("没有已上传的文件。")
 
-# 注销
-def logout(session):
-    session.logged_in = False
-    session.username = None
-
 # 主应用程序
 def main():
-    session_state = st.session_state
-
     st.title("用户认证示例")
 
-    if "logged_in" not in session_state:
-        session_state.logged_in = False
-        session_state.username = None
+    with st.form(key="login-form"):
+        login_form = st.form_submit_button("登录")
+        if login_form:
+            login()
+        st.form_submit_button("注册", on_click=register)
 
-    if not session_state.logged_in:
-        login(session_state)
-        st.markdown("---")
-        st.markdown("还没有账号？[点击此处注册](#register)")
-
-        if st.button("注册", key="register-button"):
-            register()
-            st.markdown("---")
-            login(session_state)
-    else:
-        st.sidebar.button("注销", on_click=logout, args=(session_state,))
-        upload_file(session_state)
-        show_files(session_state)
+    if st.button("刷新"):
+        st.experimental_rerun()
 
 if __name__ == '__main__':
     main()
