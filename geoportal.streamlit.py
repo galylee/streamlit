@@ -87,7 +87,7 @@ def upload_file(username):
         c.execute("INSERT INTO files (username, filename) VALUES (?, ?)", (username, uploaded_file.name))
         conn.commit()
         st.success("文件上传成功！")
-        show_files(username)
+        st.experimental_rerun()
 
 # 删除文件
 def delete_file(username, filename):
@@ -97,6 +97,7 @@ def delete_file(username, filename):
         c.execute("DELETE FROM files WHERE username=? AND filename=?", (username, filename))
         conn.commit()
         st.success("文件删除成功！")
+        st.experimental_rerun()
     else:
         st.error("文件不存在！")
 
@@ -110,7 +111,6 @@ def show_files(username):
         selected_file = st.selectbox("选择文件", file_list, key=f"file-selectbox-{username}")
         if st.button("删除文件", key="delete-button"):
             delete_file(username, selected_file)
-            show_files(username)
     else:
         st.info("没有已上传的文件。")
 
@@ -129,8 +129,10 @@ def main():
             st.session_state.show_login_form = False  # 隐藏登录表单
             register()
     else:
+        if st.sidebar.button("注销", key="logout-button"):
+            st.session_state.clear()
+            st.session_state.show_login_form = True
         st.markdown("---")
-        st.sidebar.button("注销", key="logout-button")
         upload_file(st.session_state.username)
         show_files(st.session_state.username)
 
