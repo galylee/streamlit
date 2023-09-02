@@ -30,9 +30,13 @@ conn.commit()
 # 注册页面
 def register():
     st.header("用户注册")
-    username = st.text_input("用户名")
-    password = st.text_input("密码", type="password")
-    confirm_password = st.text_input("确认密码", type="password")
+    username_input = st.empty()
+    password_input = st.empty()
+    confirm_password_input = st.empty()
+
+    username = username_input.text_input("用户名")
+    password = password_input.text_input("密码", type="password")
+    confirm_password = confirm_password_input.text_input("确认密码", type="password")
 
     if st.button("注册"):
         if password == confirm_password:
