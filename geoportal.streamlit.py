@@ -65,6 +65,7 @@ def login():
         result = c.fetchone()
         if result:
             st.success("登录成功！")
+            st.session_state.username = username  # 初始化用户名
             st.session_state.show_login_form = False  # 隐藏登录表单
             st.sidebar.button("注销", key="logout-button")
             upload_file(username)
