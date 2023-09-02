@@ -37,7 +37,7 @@ def register():
     password = password_input.text_input("密码", type="password", key="register-password")
     confirm_password = confirm_password_input.text_input("确认密码", type="password", key="register-confirm-password")
 
-    if st.button("注册"):
+    if st.button("注册", key="register-button"):
         if password == confirm_password:
             password_hash = hashlib.sha256(password.encode()).hexdigest()
             try:
@@ -55,7 +55,7 @@ def login(session):
     username = st.text_input("用户名")
     password = st.text_input("密码", type="password")
 
-    if st.button("登录"):
+    if st.button("登录", key="login-button"):
         password_hash = hashlib.sha256(password.encode()).hexdigest()
         c.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password_hash))
         result = c.fetchone()
@@ -124,8 +124,8 @@ def main():
         session_state.username = None
 
     if not session_state.logged_in:
-        st.sidebar.button("注册", key="register-button", on_click=register)
-        if st.sidebar.button("登录"):
+        st.sidebar.button("注册", key="register-sidebar-button", on_click=register)
+        if st.sidebar.button("登录", key="login-sidebar-button"):
             login(session_state)
     else:
         st.sidebar.button("注销", on_click=logout, args=(session_state,))
