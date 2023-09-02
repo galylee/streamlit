@@ -87,7 +87,7 @@ def upload_file(username):
         c.execute("INSERT INTO files (username, filename) VALUES (?, ?)", (username, uploaded_file.name))
         conn.commit()
         st.success("文件上传成功！")
-        st.experimental_rerun()
+        st.experimental_rerun_on_run()  # 刷新文件列表
 
 # 删除文件
 def delete_file(username, filename):
@@ -97,7 +97,7 @@ def delete_file(username, filename):
         c.execute("DELETE FROM files WHERE username=? AND filename=?", (username, filename))
         conn.commit()
         st.success("文件删除成功！")
-        st.experimental_rerun()
+        st.experimental_rerun_on_run()  # 刷新文件列表
     else:
         st.error("文件不存在！")
 
