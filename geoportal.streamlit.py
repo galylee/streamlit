@@ -65,48 +65,49 @@ def login():
         result = c.fetchone()
         if result:
             st.success("登录成功！")
-            upload_file()
-            show_files()
+            st.session_state.show_login_form = False  # 隐藏登录表单
+            upload_file(username)
+            show_files(username)
         else:
             st.error("用户名或密码错误！")
 
 # 上传文件
-def upload_file():
+def upload_file(username):
     st.header("上传文件")
     uploaded_file = st.file_uploader("选择要上传的文件")
 
     if uploaded_file is not None:
-        file_path = f"uploads/{uploaded_file.name}"
+        file_path = f"uploads/{username}/{uploaded_file.name}"
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getvalue())
 
-        c.execute("INSERT INTO files (username, filename) VALUES (?, ?)", (uploaded_file.name, uploaded_file.name))
+        c.execute("INSERT INTO files (username, filename) VALUES (?, ?)", (username, uploaded_file.name))
         conn.commit()
         st.success("文件上传成功！")
 
 # 删除文件
-def delete_file(filename):
-    file_path = f"uploads/{filename}"
+def delete_file(username, filename):
+    file_path = f"uploads/{username}/{filename}"
     if os.path.exists(file_path):
         os.remove(file_path)
-        c.execute("DELETE FROM files WHERE username=? AND filename=?", (filename, filename))
+        c.execute("DELETE FROM files WHERE username=? AND filename=?", (username, filename))
         conn.commit()
         st.success("文件删除成功！")
     else:
         st.error("文件不存在！")
 
 # 显示文件列表
-def show_files():
+def show_files(username):
     st.header("已上传文件列表")
-    c.execute("SELECT filename FROM files")
+    c.execute("SELECT filename FROM files WHERE username=?", (username,))
     files = c.fetchall()
     if files:
         file_list = [file[0] for file in files]
         selected_file = st.selectbox("选择文件", file_list)
         if st.button("删除文件", key="delete-button"):
-            delete_file(selected_file)
-            show_files()
+            delete_file(username, selected_file)
+            show_files(username)
     else:
         st.info("没有已上传的文件。")
 
