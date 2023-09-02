@@ -3,7 +3,6 @@ import sqlite3
 import hashlib
 import os
 import pandas as pd
-from streamlit import SessionState
 
 # 创建或连接到SQLite数据库
 conn = sqlite3.connect('user.db')
@@ -69,7 +68,7 @@ def login(session):
 # 上传文件
 def upload_file(session):
     st.header("上传文件")
-    uploaded_file = st.file_uploader("选择要上传的CSV文件", type="csv")
+    uploaded_file = st.file_uploader("选择要上传的CSV文件")
 
     if uploaded_file is not None:
         file_path = f"uploads/{session.username}/{uploaded_file.name}"
@@ -113,9 +112,13 @@ def logout(session):
 
 # 主应用程序
 def main():
-    session_state = SessionState.get(logged_in=False, username=None)
+    session_state = st.session_state
 
     st.title("用户认证示例")
+
+    if "logged_in" not in session_state:
+        session_state.logged_in = False
+        session_state.username = None
 
     if not session_state.logged_in:
         login(session_state)
