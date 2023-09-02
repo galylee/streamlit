@@ -66,6 +66,7 @@ def login():
         if result:
             st.success("登录成功！")
             st.session_state.show_login_form = False  # 隐藏登录表单
+            st.sidebar.button("注销", key="logout-button")
             upload_file(username)
             show_files(username)
         else:
@@ -128,6 +129,7 @@ def main():
     else:
         register()
         st.markdown("---")
+        st.sidebar.button("注销", key="logout-button")
         login_button = st.button("登录")
         if login_button:
             st.session_state.show_login_form = True  # 显示登录表单
