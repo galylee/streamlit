@@ -107,7 +107,7 @@ def show_files(username):
     files = c.fetchall()
     if files:
         file_list = [file[0] for file in files]
-        selected_file = st.selectbox("选择文件", file_list)
+        selected_file = st.selectbox("选择文件", file_list, key="file-selectbox")
         if st.button("删除文件", key="delete-button"):
             delete_file(username, selected_file)
             show_files(username)
