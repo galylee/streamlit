@@ -86,6 +86,7 @@ def upload_file(username):
         c.execute("INSERT INTO files (username, filename) VALUES (?, ?)", (username, uploaded_file.name))
         conn.commit()
         st.success("文件上传成功！")
+        show_files(username)
 
 # 删除文件
 def delete_file(username, filename):
@@ -127,12 +128,10 @@ def main():
             st.session_state.show_login_form = False  # 隐藏登录表单
             register()
     else:
-        register()
         st.markdown("---")
         st.sidebar.button("注销", key="logout-button")
-        login_button = st.button("登录")
-        if login_button:
-            st.session_state.show_login_form = True  # 显示登录表单
+        upload_file(st.session_state.username)
+        show_files(st.session_state.username)
 
 if __name__ == '__main__':
     main()
