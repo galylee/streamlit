@@ -44,6 +44,8 @@ def register():
                 c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password_hash))
                 conn.commit()
                 st.success("注册成功！")
+                st.empty()
+                st.empty()
             except sqlite3.IntegrityError:
                 st.error("用户名已存在！")
         else:
@@ -63,6 +65,8 @@ def login(session):
             session.logged_in = True
             session.username = username
             st.success("登录成功！")
+            st.empty()
+            st.empty()
             upload_file(session)
             show_files(session)
         else:
@@ -130,6 +134,8 @@ def main():
 
         if st.button("注册", key="register-button"):
             register()
+            st.markdown("---")
+            login(session_state)
     else:
         st.sidebar.button("注销", on_click=logout, args=(session_state,))
         upload_file(session_state)
