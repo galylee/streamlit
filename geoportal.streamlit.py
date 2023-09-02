@@ -47,7 +47,7 @@ def register():
                 username_input.empty()
                 password_input.empty()
                 confirm_password_input.empty()
-                login_form.empty()  # 隐藏登陆表单
+                st.session_state.show_login_form = True  # 显示登录表单
             except sqlite3.IntegrityError:
                 st.error("用户名已存在！")
         else:
@@ -114,14 +114,22 @@ def show_files():
 def main():
     st.title("用户认证示例")
 
-    with st.form(key="login-form"):
-        login_form = st.form_submit_button("登录")
-        if login_form:
-            login()
-        st.form_submit_button("注册", on_click=register)
+    if "show_login_form" not in st.session_state:
+        st.session_state.show_login_form = True
 
-    if st.button("刷新"):
-        st.experimental_rerun()
+    if st.session_state.show_login_form:
+        login()
+        st.markdown("---")
+        register_button = st.button("注册")
+        if register_button:
+            st.session_state.show_login_form = False  # 隐藏登录表单
+            register()
+    else:
+        register()
+        st.markdown("---")
+        login_button = st.button("登录")
+        if login_button:
+            st.session_state.show_login_form = True  # 显示登录表单
 
 if __name__ == '__main__':
     main()
