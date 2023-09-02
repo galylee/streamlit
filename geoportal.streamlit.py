@@ -87,7 +87,7 @@ def upload_file(username):
         c.execute("INSERT INTO files (username, filename) VALUES (?, ?)", (username, uploaded_file.name))
         conn.commit()
         st.success("文件上传成功！")
-        st.experimental_rerun_on_run()  # 刷新文件列表
+        #st.experimental_rerun_on_run()  # 刷新文件列表
 
 # 删除文件
 def delete_file(username, filename):
