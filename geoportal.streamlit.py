@@ -102,7 +102,7 @@ def show_files(session):
     if files:
         file_list = [file[0] for file in files]
         selected_file = st.selectbox("选择文件", file_list)
-        if st.button("删除文件"):
+        if st.button("删除文件", key="delete-button"):
             delete_file(session, selected_file)
             show_files(session)
     else:
@@ -124,9 +124,9 @@ def main():
         session_state.username = None
 
     if not session_state.logged_in:
-        login(session_state)
-        register()
-        st.sidebar.empty()
+        st.sidebar.button("注册", key="register-button", on_click=register)
+        if st.sidebar.button("登录"):
+            login(session_state)
     else:
         st.sidebar.button("注销", on_click=logout, args=(session_state,))
         upload_file(session_state)
