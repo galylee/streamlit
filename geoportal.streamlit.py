@@ -97,7 +97,7 @@ def delete_file(username, filename):
         c.execute("DELETE FROM files WHERE username=? AND filename=?", (username, filename))
         conn.commit()
         st.success("文件删除成功！")
-        st.experimental_rerun_on_run()  # 刷新文件列表
+        #st.experimental_rerun_on_run()  # 刷新文件列表
     else:
         st.error("文件不存在！")
 
