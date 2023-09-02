@@ -2,7 +2,6 @@ import streamlit as st
 import sqlite3
 import hashlib
 import os
-import pandas as pd
 
 # 创建或连接到SQLite数据库
 conn = sqlite3.connect('user.db')
@@ -34,9 +33,9 @@ def register():
     password_input = st.empty()
     confirm_password_input = st.empty()
 
-    username = username_input.text_input("用户名")
-    password = password_input.text_input("密码", type="password")
-    confirm_password = confirm_password_input.text_input("确认密码", type="password")
+    username = username_input.text_input("用户名", key="register-username")
+    password = password_input.text_input("密码", type="password", key="register-password")
+    confirm_password = confirm_password_input.text_input("确认密码", type="password", key="register-confirm-password")
 
     if st.button("注册"):
         if password == confirm_password:
