@@ -47,7 +47,7 @@ def register():
                 username_input.empty()
                 password_input.empty()
                 confirm_password_input.empty()
-                st.session_state.show_login_form = True  # 显示登录表单
+                st.session_state.session_state.show_login_form = True  # 显示登录表单
             except sqlite3.IntegrityError:
                 st.error("用户名已存在！")
         else:
@@ -65,8 +65,8 @@ def login():
         result = c.fetchone()
         if result:
             st.success("登录成功！")
-            st.session_state.username = username  # 初始化用户名
-            st.session_state.show_login_form = False  # 隐藏登录表单
+            st.session_state.session_state.username = username  # 初始化用户名
+            st.session_state.session_state.show_login_form = False  # 隐藏登录表单
             st.sidebar.button("注销", key="logout-button")
             upload_file(username)
             show_files(username)
@@ -118,23 +118,23 @@ def show_files(username):
 def main():
     st.title("用户认证示例")
 
-    if "show_login_form" not in st.session_state:
-        st.session_state.show_login_form = True
+    if "session_state" not in st.session_state:
+        st.session_state.session_state = SessionState(show_login_form=True)
 
-    if st.session_state.show_login_form:
+    if st.session_state.session_state.show_login_form:
         login()
         st.markdown("---")
         register_button = st.button("注册")
         if register_button:
-            st.session_state.show_login_form = False  # 隐藏登录表单
+            st.session_state.session_state.show_login_form = False  # 隐藏登录表单
             register()
     else:
         if st.sidebar.button("注销", key="logout-button"):
             st.session_state.clear()
-            st.session_state.show_login_form = True
+            st.session_state.session_state.show_login_form = True
         st.markdown("---")
-        upload_file(st.session_state.username)
-        show_files(st.session_state.username)
+        upload_file(st.session_state.session_state.username)
+        show_files(st.session_state.session_state.username)
 
 if __name__ == '__main__':
     main()
